@@ -12,25 +12,34 @@
   --success-color: #48bb78;
   --border-color: #e2e8f0;
   --border-dark: #4a5568;
-  --shadow-light: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-dark: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
-  --transition: all 0.2s ease-in-out; /* مدة أقصر للانتقالات */
-  --border-radius: 8px; /* زوايا أقل حدة */
+  --shadow-light: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-dark: 0 2px 4px rgba(0, 0, 0, 0.3);
+  --transition: all 0.2s ease-in-out;
+  --border-radius: 8px;
   --spacing-xs: 4px;
   --spacing-sm: 8px;
-  --spacing-md: 12px; /* تقليل المسافات قليلاً */
-  --spacing-lg: 20px;
-  --spacing-xl: 28px;
+  --spacing-md: 12px;
+  --spacing-lg: 16px;
+  --spacing-xl: 24px;
 }
 
-/* تحسين عرض الخطوط في WebView */
+/* إعداد أساسي محسن للموبايل */
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
 html {
   font-size: 16px;
   -webkit-text-size-adjust: 100%;
-  -webkit-tap-highlight-color: transparent;
-  /* إزالة التمرير المطاطي في الأندرويد */
-  overscroll-behavior: none;
-  -webkit-overflow-scrolling: touch;
+  -ms-text-size-adjust: 100%;
+  height: 100%;
+  width: 100%;
+  /* منع التمرير الأفقي */
+  overflow-x: hidden;
+  /* تحسين الأداء */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
@@ -39,17 +48,20 @@ body {
   color: var(--text-light);
   direction: rtl;
   margin: 0;
-  padding: var(--spacing-sm); /* تقليل الحشو الخارجي */
+  padding: 0;
   min-height: 100vh;
+  width: 100vw;
   line-height: 1.5;
   transition: var(--transition);
+  /* منع التمرير الأفقي */
   overflow-x: hidden;
-  /* تحسينات WebView الأندرويد */
+  /* تحسين الأداء في WebView */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
   /* منع التمرير المطاطي */
-  overscroll-behavior-y: none;
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: touch;
   /* تحسين الأداء */
   transform: translateZ(0);
   backface-visibility: hidden;
@@ -60,80 +72,81 @@ body.dark {
   color: var(--text-dark);
 }
 
-/* الحاوية الرئيسية محسنة للأندرويد */
+/* الحاوية الرئيسية محسنة تماماً للموبايل */
 .container {
+  width: 100%;
   max-width: 100%;
-  width: calc(100% - 16px);
-  margin: 8px auto;
+  margin: 0;
+  padding: var(--spacing-md);
   background: var(--card-bg-light);
-  padding: 16px;
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow-light);
+  min-height: 100vh;
   transition: var(--transition);
   position: relative;
-  box-sizing: border-box;
-  /* تحسين الأداء في WebView */
-  will-change: auto;
-  contain: layout style;
+  /* إزالة الظلال في الموبايل لتوفير مساحة */
+  box-shadow: none;
+  border-radius: 0;
+  /* منع التمرير الأفقي */
+  overflow-x: hidden;
 }
 
 body.dark .container {
   background: var(--card-bg-dark);
-  box-shadow: var(--shadow-dark);
 }
 
-/* العناوين */
+/* العناوين محسنة للموبايل */
 h1, h2, h3, h4, h5, h6 {
   margin: 0 0 var(--spacing-md) 0;
-  font-weight: 500; /* خط أقل سماكة */
+  font-weight: 500;
   line-height: 1.3;
-  /* تحسين عرض النص في الأندرويد */
   text-rendering: optimizeLegibility;
+  /* منع كسر النص خارج الحدود */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 h2 {
   text-align: center;
-  font-size: 1.4rem;
+  font-size: 1.25rem;
   color: inherit;
   margin-bottom: var(--spacing-lg);
+  padding: 0 var(--spacing-sm);
 }
 
-/* عناصر الإدخال محسنة للأندرويد WebView */
+/* عناصر الإدخال محسنة بالكامل للموبايل */
 input, select, textarea {
   width: 100%;
-  padding: 10px 12px;
-  margin: 6px 0;
+  max-width: 100%;
+  padding: 12px;
+  margin: var(--spacing-xs) 0;
   border-radius: var(--border-radius);
   border: 1px solid var(--border-color);
-  font-size: 14px;
+  font-size: 16px; /* مهم جداً: منع التكبير التلقائي في iOS */
   background: var(--card-bg-light);
   color: var(--text-light);
   transition: var(--transition);
-  /* إزالة التأثيرات الافتراضية للأندرويد */
+  /* إزالة التأثيرات الافتراضية */
   -webkit-appearance: none;
+  -moz-appearance: none;
   appearance: none;
   outline: none;
-  min-height: 40px;
-  /* تحسين الأداء */
-  will-change: border-color;
-  /* منع التكبير التلقائي */
-  max-width: 100%;
+  min-height: 44px; /* الحد الأدنى للمس في iOS */
   box-sizing: border-box;
+  /* منع التمدد خارج الحدود */
+  resize: none;
 }
 
 input:focus, select:focus, textarea:focus {
   border-color: var(--primary-color);
   box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.15);
-  /* إزالة التحويل للأندرويد */
-  transform: none;
 }
 
-/* تحسين خاص لـ Select في الأندرويد */
+/* تحسين خاص لـ Select */
 select {
   background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="8" viewBox="0 0 12 8"><path fill="%23999" d="M6 8L0 2h12z"/></svg>');
   background-repeat: no-repeat;
   background-position: left 12px center;
   padding-left: 40px;
+  cursor: pointer;
 }
 
 body.dark input,
@@ -155,19 +168,21 @@ textarea {
   resize: vertical;
   min-height: 80px;
   font-family: inherit;
+  max-height: 200px;
 }
 
-/* الأزرار محسنة للمس في الأندرويد */
+/* الأزرار محسنة بالكامل للمس */
 button {
   width: 100%;
-  min-height: 42px;
-  padding: 10px 16px;
-  margin: 6px 0;
+  max-width: 100%;
+  min-height: 44px; /* الحد الأدنى للمس */
+  padding: 12px 16px;
+  margin: var(--spacing-sm) 0;
   border-radius: var(--border-radius);
   border: none;
   background-color: var(--primary-color);
   color: white;
-  font-size: 14px;
+  font-size: 16px; /* منع التكبير التلقائي */
   font-weight: 500;
   cursor: pointer;
   display: flex;
@@ -179,13 +194,14 @@ button {
   overflow: hidden;
   -webkit-user-select: none;
   user-select: none;
-  /* تحسين الأداء في الأندرويد */
+  /* تحسين الأداء */
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
-  will-change: background-color;
+  will-change: transform, background-color;
+  box-sizing: border-box;
 }
 
-/* تأثير اللمس للأندرويد */
+/* تأثير اللمس */
 button:active {
   background-color: var(--primary-hover);
   transform: scale(0.98);
@@ -210,7 +226,7 @@ button:disabled {
   background-color: var(--success-color);
 }
 
-/* نتائج محسنة */
+/* النتائج محسنة */
 .result {
   margin-top: var(--spacing-lg);
   padding: var(--spacing-md);
@@ -218,11 +234,13 @@ button:disabled {
   border: 1px solid rgba(66, 153, 225, 0.2);
   border-radius: var(--border-radius);
   transition: var(--transition);
-  overflow: hidden;
   width: 100%;
+  max-width: 100%;
   box-sizing: border-box;
-  /* تحسين الأداء */
-  contain: layout style;
+  /* منع التمرير الأفقي */
+  overflow-x: hidden;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 body.dark .result {
@@ -230,9 +248,10 @@ body.dark .result {
   border-color: rgba(66, 153, 225, 0.3);
 }
 
-/* جداول محسنة للأندرويد */
+/* جداول محسنة بالكامل للموبايل */
 .table-container {
   width: 100%;
+  max-width: 100%;
   overflow-x: auto;
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
@@ -243,17 +262,23 @@ body.dark .result {
   box-sizing: border-box;
   /* تحسين الأداء */
   contain: layout;
+  /* إضافة حدود للإشارة للتمرير */
+  border: 1px solid var(--border-color);
+}
+
+body.dark .table-container {
+  border-color: var(--border-dark);
+  box-shadow: var(--shadow-dark);
 }
 
 table {
   width: 100%;
-  min-width: 300px;
+  min-width: 100%;
   border-collapse: separate;
   border-spacing: 0;
   font-size: 14px;
   background: var(--card-bg-light);
-  /* إزالة الرسوم المتحركة المعقدة */
-  table-layout: auto; /* تغيير إلى auto للمرونة */
+  table-layout: auto;
   box-sizing: border-box;
 }
 
@@ -264,15 +289,23 @@ body.dark table {
 th, td {
   padding: 8px 6px;
   text-align: center;
-  border: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+  border-right: 1px solid var(--border-color);
   vertical-align: middle;
   word-wrap: break-word;
   overflow-wrap: break-word;
   box-sizing: border-box;
-  /* تحسين عرض النصوص الطويلة */
-  max-width: 150px;
+  /* تحسين عرض النصوص */
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  min-width: 80px;
+  max-width: 120px;
+}
+
+/* إزالة الحدود من آخر عمود */
+th:last-child, td:last-child {
+  border-right: none;
 }
 
 th {
@@ -281,10 +314,10 @@ th {
   position: sticky;
   top: 0;
   z-index: 2;
-  white-space: nowrap;
+  font-size: 13px;
 }
 
-/* تحسين التفاعل مع الخلايا للمس */
+/* تحسين التفاعل مع الخلايا */
 td.expandable {
   cursor: pointer;
   position: relative;
@@ -303,7 +336,7 @@ body.dark td {
   border-color: var(--border-dark);
 }
 
-/* مفتاح التبديل محسن للأندرويد */
+/* مفتاح التبديل محسن */
 .toggle-dark-mode {
   margin-top: var(--spacing-lg);
   text-align: center;
@@ -321,8 +354,8 @@ body.dark td {
 .switch {
   position: relative;
   display: inline-block;
-  width: 52px;
-  height: 28px;
+  width: 50px;
+  height: 26px;
   margin-left: var(--spacing-md);
   vertical-align: middle;
 }
@@ -331,6 +364,8 @@ body.dark td {
   opacity: 0;
   width: 0;
   height: 0;
+  margin: 0;
+  padding: 0;
 }
 
 .slider {
@@ -339,16 +374,15 @@ body.dark td {
   top: 0; left: 0; right: 0; bottom: 0;
   background-color: #cbd5e0;
   transition: var(--transition);
-  border-radius: 28px;
-  /* تأثير أبسط للأندرويد */
+  border-radius: 26px;
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .slider:before {
   position: absolute;
   content: "";
-  height: 20px;
-  width: 20px;
+  height: 18px;
+  width: 18px;
   left: 4px;
   bottom: 4px;
   background-color: white;
@@ -365,246 +399,134 @@ input:checked + .slider:before {
   transform: translateX(24px);
 }
 
-/* تحسينات الأندرويد - شاشات مختلفة */
-@media (max-width: 768px) {
-  body {
-    padding: 4px;
-  }
-
+/* تحسينات للشاشات الصغيرة */
+@media screen and (max-width: 768px) {
   .container {
-    padding: 12px;
-    width: calc(100% - 8px);
-    margin: 4px auto;
-    box-sizing: border-box;
+    padding: var(--spacing-sm);
   }
 
   h2 {
-    font-size: 1.25rem;
-    margin-bottom: 16px;
+    font-size: 1.2rem;
+    margin-bottom: var(--spacing-md);
   }
 
   input, select, textarea, button {
-    font-size: 14px;
-    padding: 8px 12px;
-    min-height: 38px;
+    font-size: 16px; /* مهم جداً للموبايل */
+    padding: 12px;
+    margin: var(--spacing-xs) 0;
   }
 
   table {
     font-size: 12px;
-    min-width: 280px;
   }
 
   th, td {
     padding: 6px 4px;
     font-size: 11px;
+    min-width: 60px;
     max-width: 100px;
+  }
+
+  th {
+    font-size: 12px;
   }
 }
 
-/* شاشات صغيرة جداً */
-@media (max-width: 480px) {
+/* تحسينات للشاشات الصغيرة جداً */
+@media screen and (max-width: 480px) {
   .container {
-    margin: 0;
-    border-radius: 0;
-    padding: 12px;
-    width: 100%;
-    max-width: 100%;
+    padding: var(--spacing-xs);
+  }
+
+  h2 {
+    font-size: 1.1rem;
+    padding: 0;
+  }
+
+  input, select, textarea, button {
+    font-size: 16px; /* يجب أن يبقى 16px */
+    padding: 10px;
   }
 
   .table-container {
-    margin: 16px -12px;
+    margin-left: calc(-1 * var(--spacing-xs));
+    margin-right: calc(-1 * var(--spacing-xs));
     border-radius: 0;
+    border-left: none;
+    border-right: none;
   }
 
   table {
     font-size: 11px;
-    min-width: 300px;
   }
 
   th, td {
     padding: 4px 3px;
     font-size: 10px;
+    min-width: 50px;
     max-width: 80px;
   }
 
-  input, select, textarea, button {
-    font-size: 14px;
-    padding: 8px 10px;
-    min-height: 36px;
+  th {
+    font-size: 11px;
+  }
+
+  .switch {
+    width: 45px;
+    height: 24px;
+  }
+
+  .slider:before {
+    height: 16px;
+    width: 16px;
+  }
+
+  input:checked + .slider:before {
+    transform: translateX(21px);
   }
 }
 
-/* عرض مكدس للشاشات الصغيرة جداً */
-@media (max-width: 360px) {
-  .table-container table {
-    display: none;
-  }
-  
-  .mobile-stack {
-    display: block;
-  }
-  
-  .mobile-stack .item {
-    background: var(--card-bg-light);
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-    padding: var(--spacing-sm);
-    margin-bottom: var(--spacing-sm);
-    box-shadow: var(--shadow-light);
-  }
-  
-  body.dark .mobile-stack .item {
-    background: var(--card-bg-dark);
-    border-color: var(--border-dark);
-  }
-  
-  .mobile-stack .item-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 2px 0;
-    border-bottom: 1px solid rgba(0,0,0,0.1);
-    font-size: 12px;
-  }
-  
-  .mobile-stack .item-row:last-child {
-    border-bottom: none;
-  }
-  
-  .mobile-stack .item-label {
-    font-weight: 600;
-    color: var(--primary-color);
-  }
-  
-  .mobile-stack .item-value {
-    text-align: left;
-    word-break: break-word;
-  }
-}
-
-.mobile-stack {
-  display: none;
-}
-
-/* فئات مساعدة */
-.no-overflow {
-  overflow: hidden !important;
-}
-
-.text-truncate {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.text-break {
-  word-wrap: break-word !important;
-  word-break: break-word !important;
-  overflow-wrap: break-word !important;
-}
-
-/* حماية شاملة من خروج المحتوى */
-* {
-  max-width: 100%;
-  box-sizing: border-box;
-}
-
-html, body {
-  overflow-x: hidden;
-}
-
-/* تحسينات الأداء للأندرويد */
-.container, .result {
-  /* تحسين الأداء */
-  contain: layout style;
-  will-change: auto;
-}
-
-/* إزالة التأثيرات المعقدة للأجهزة الضعيفة */
-@media (max-device-width: 768px) {
-  * {
-    animation-duration: 0.1s !important;
-    transition-duration: 0.1s !important;
-  }
-  
+/* تحسينات خاصة للشاشات الطويلة (موبايل في الوضع العمودي) */
+@media screen and (max-width: 414px) and (min-height: 700px) {
   .container {
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    min-height: 100vh;
+    padding-bottom: var(--spacing-xl);
+  }
+}
+
+/* تحسين للشاشات العريضة جداً (موبايل في الوضع الأفقي) */
+@media screen and (max-height: 500px) and (min-width: 700px) {
+  .container {
+    padding: var(--spacing-sm);
+  }
+
+  h2 {
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .result {
+    margin-top: var(--spacing-sm);
+  }
+}
+
+/* إضافة تحسينات للأجهزة عالية الدقة */
+@media screen and (-webkit-min-device-pixel-ratio: 2), 
+       screen and (min-resolution: 192dpi) {
+  input, select, textarea, button {
+    border-width: 0.5px;
+  }
+}
+
+/* تحسين خاص لأجهزة iPhone */
+@supports (-webkit-touch-callout: none) {
+  input, select, textarea {
+    font-size: 16px; /* منع التكبير في Safari */
+    -webkit-appearance: none;
+    border-radius: var(--border-radius);
   }
   
-  body.dark .container {
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  button {
+    -webkit-appearance: none;
+    border-radius: var(--border-radius);
   }
-}
-
-/* تحسين للوضع المظلم التلقائي */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg-light: var(--bg-dark);
-    --text-light: var(--text-dark);
-    --card-bg-light: var(--card-bg-dark);
-    --border-color: var(--border-dark);
-  }
-}
-
-/* تحسينات خاصة لـ WebView */
-/* منع التحديد غير المرغوب فيه */
-* {
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-
-/* السماح بالتحديد للنصوص والإدخالات فقط */
-input, textarea, .result, p, span, div {
-  -webkit-user-select: text;
-  -moz-user-select: text;
-  -ms-user-select: text;
-  user-select: text;
-}
-
-/* تحسين أيقونة التحميل */
-.loading {
-  opacity: 0.7;
-  pointer-events: none;
-  position: relative;
-}
-
-.loading::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 16px;
-  height: 16px;
-  border: 2px solid transparent;
-  border-top: 2px solid currentColor;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: translate(-50%, -50%) rotate(360deg); }
-}
-
-/* تحسينات إضافية للأندرويد */
-/* منع التمرير المطاطي */
-body {
-  overscroll-behavior: none;
-  -webkit-overflow-scrolling: touch;
-}
-
-/* تحسين عرض الخطوط */
-* {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-/* تحسين الأداء العام */
-.container * {
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
 }
