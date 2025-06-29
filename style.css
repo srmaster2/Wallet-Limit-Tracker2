@@ -1,30 +1,81 @@
 :root {
-  --bg-light: #f0f2f5;
-  --bg-dark: #1e1e1e;
-  --text-light: #333;
-  --text-dark: #eee;
-  --card-bg-light: #fff;
-  --card-bg-dark: #2a2a2a;
-  --primary-color: #28a745;
-  --danger-color: #dc3545;
-  --border-color: #ccc;
-  --shadow: rgba(0, 0, 0, 0.1);
-  --transition: 0.3s;
+  --bg-light: #f5f7fa;
+  --bg-dark: #1a1a1a;
+  --text-light: #2c3e50;
+  --text-dark: #f8f9fa;
+  --card-bg-light: #ffffff;
+  --card-bg-dark: #2d3748;
+  --primary-color: #4299e1;
+  --primary-hover: #3182ce;
+  --danger-color: #e53e3e;
+  --danger-hover: #c53030;
+  --success-color: #48bb78;
+  --border-color: #e2e8f0;
+  --border-dark: #4a5568;
+  --shadow-light: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-dark: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --border-radius: 12px;
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+}
+
+/* تحسين الخطوط للشاشات عالية الدقة */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* الرسوم المتحركة المحسنة */
+@keyframes slideInUp {
+  from { 
+    opacity: 0; 
+    transform: translateY(30px) scale(0.95); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0) scale(1); 
+  }
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/* إعدادات أساسية محسنة للموبايل */
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  touch-action: manipulation;
 }
 
 body {
-  font-family: 'Tahoma', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   background-color: var(--bg-light);
   color: var(--text-light);
   direction: rtl;
   margin: 0;
-  padding: 20px;
-  transition: background var(--transition), color var(--transition);
+  padding: var(--spacing-md);
+  min-height: 100vh;
+  line-height: 1.6;
+  transition: var(--transition);
+  overflow-x: hidden;
 }
 
 body.dark {
@@ -32,66 +83,124 @@ body.dark {
   color: var(--text-dark);
 }
 
+/* الحاوية الرئيسية */
 .container {
-  max-width: 500px;
-  margin: auto;
+  max-width: 480px;
+  width: 100%;
+  margin: 0 auto;
   background: var(--card-bg-light);
-  padding: 25px;
-  border-radius: 15px;
-  box-shadow: 0 0 15px var(--shadow);
-  transition: background var(--transition);
-  animation: fadeIn 0.5s ease-in-out;
+  padding: var(--spacing-lg);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-light);
+  transition: var(--transition);
+  animation: slideInUp 0.6s ease-out;
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 body.dark .container {
   background: var(--card-bg-dark);
+  box-shadow: var(--shadow-dark);
+}
+
+/* العناوين */
+h1, h2, h3, h4, h5, h6 {
+  margin: 0 0 var(--spacing-md) 0;
+  font-weight: 600;
+  line-height: 1.2;
 }
 
 h2 {
   text-align: center;
-  margin-bottom: 20px;
+  font-size: 1.5rem;
   color: inherit;
+  margin-bottom: var(--spacing-lg);
 }
 
-input, select, textarea, button {
+/* عناصر الإدخال المحسنة للموبايل */
+input, select, textarea {
   width: 100%;
-  padding: 10px;
-  margin: 8px 0;
-  border-radius: 8px;
-  border: 1px solid var(--border-color);
-  box-sizing: border-box;
-  font-size: 16px;
-  background: #fff;
-  transition: background var(--transition), color var(--transition), border var(--transition);
+  padding: var(--spacing-md);
+  margin: var(--spacing-sm) 0;
+  border-radius: var(--border-radius);
+  border: 2px solid var(--border-color);
+  font-size: 16px; /* منع التكبير في iOS */
+  background: var(--card-bg-light);
+  color: var(--text-light);
+  transition: var(--transition);
+  -webkit-appearance: none;
+  appearance: none;
+  min-height: 48px; /* الحد الأدنى للمس السهل */
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+  transform: translateY(-2px);
 }
 
 body.dark input,
 body.dark select,
 body.dark textarea {
-  background: #333;
-  color: #eee;
-  border: 1px solid #555;
+  background: var(--card-bg-dark);
+  color: var(--text-dark);
+  border-color: var(--border-dark);
+}
+
+body.dark input:focus,
+body.dark select:focus,
+body.dark textarea:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
 }
 
 textarea {
   resize: vertical;
+  min-height: 100px;
+  font-family: inherit;
 }
 
+/* الأزرار المحسنة للمس */
 button {
+  width: 100%;
+  min-height: 48px;
+  padding: var(--spacing-md) var(--spacing-lg);
+  margin: var(--spacing-sm) 0;
+  border-radius: var(--border-radius);
+  border: none;
   background-color: var(--primary-color);
   color: white;
-  border: none;
-  font-weight: bold;
+  font-size: 16px;
+  font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  transition: background var(--transition);
+  gap: var(--spacing-sm);
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 button:hover {
-  background-color: #218838;
+  background-color: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-light);
+}
+
+button:active {
+  transform: translateY(0);
+  animation: pulse 0.3s ease;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .btn-danger {
@@ -99,64 +208,145 @@ button:hover {
 }
 
 .btn-danger:hover {
-  background-color: #c82333;
+  background-color: var(--danger-hover);
 }
 
+.btn-success {
+  background-color: var(--success-color);
+}
+
+/* نتائج محسنة مع حماية التخطيط */
 .result {
-  margin-top: 20px;
-  padding: 15px;
-  background-color: #f1f1f1;
-  border-radius: 8px;
-  overflow-x: auto;
-  transition: background var(--transition);
+  margin-top: var(--spacing-lg);
+  padding: var(--spacing-md);
+  background-color: rgba(66, 153, 225, 0.05);
+  border: 1px solid rgba(66, 153, 225, 0.2);
+  border-radius: var(--border-radius);
+  transition: var(--transition);
   animation: fadeIn 0.5s ease-in-out;
+  overflow: hidden;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 body.dark .result {
-  background-color: #333;
-  color: #eee;
+  background-color: rgba(66, 153, 225, 0.1);
+  border-color: rgba(66, 153, 225, 0.3);
+}
+
+/* جداول محسنة للموبايل مع حماية قوية من التشويه */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  margin-top: var(--spacing-md);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-light);
+  position: relative;
+  box-sizing: border-box;
+}
+
+.table-wrapper {
+  min-width: 100%;
+  overflow: hidden;
 }
 
 table {
   width: 100%;
-  margin-top: 15px;
-  border-collapse: collapse;
+  min-width: 300px;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 14px;
+  background: var(--card-bg-light);
   animation: fadeIn 0.5s ease-in-out;
+  table-layout: fixed;
+  box-sizing: border-box;
+}
+
+body.dark table {
+  background: var(--card-bg-dark);
 }
 
 th, td {
-  border: 1px solid var(--border-color);
-  padding: 8px;
+  padding: 8px 4px;
   text-align: center;
-  transition: background var(--transition);
+  border: 1px solid var(--border-color);
+  vertical-align: middle;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  box-sizing: border-box;
+  max-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 th {
-  background-color: #eaeaea;
+  background-color: rgba(66, 153, 225, 0.1);
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  white-space: nowrap;
+}
+
+td {
+  white-space: nowrap;
+}
+
+td.expandable {
+  cursor: pointer;
+  position: relative;
+}
+
+td.expandable:hover {
+  white-space: normal;
+  overflow: visible;
+  z-index: 10;
+  background: var(--card-bg-light);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  border-radius: 4px;
+  padding: 12px;
+  position: absolute;
+  min-width: 200px;
+  max-width: 300px;
+}
+
+body.dark td.expandable:hover {
+  background: var(--card-bg-dark);
 }
 
 body.dark th {
-  background-color: #444;
+  background-color: rgba(66, 153, 225, 0.2);
 }
 
-.btn-toggle {
-  font-size: 16px;
-  font-weight: bold;
-  transition: background var(--transition);
+body.dark th,
+body.dark td {
+  border-color: var(--border-dark);
 }
 
+/* مفتاح التبديل المحسن */
 .toggle-dark-mode {
-  margin-top: 10px;
+  margin-top: var(--spacing-lg);
   text-align: center;
+  padding: var(--spacing-md);
+}
+
+#modeLabel {
   font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-weight: 500;
 }
 
 .switch {
   position: relative;
   display: inline-block;
-  width: 55px;
-  height: 28px;
-  margin-left: 10px;
+  width: 60px;
+  height: 32px;
+  margin-left: var(--spacing-md);
   vertical-align: middle;
 }
 
@@ -170,74 +360,341 @@ body.dark th {
   position: absolute;
   cursor: pointer;
   top: 0; left: 0; right: 0; bottom: 0;
-  background-color: #ccc;
-  transition: 0.4s;
-  border-radius: 28px;
+  background-color: #cbd5e0;
+  transition: var(--transition);
+  border-radius: 32px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .slider:before {
   position: absolute;
   content: "";
-  height: 20px; width: 20px;
+  height: 24px;
+  width: 24px;
   left: 4px;
   bottom: 4px;
   background-color: white;
-  transition: 0.4s;
+  transition: var(--transition);
   border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 input:checked + .slider {
-  background-color: #28a745;
+  background-color: var(--primary-color);
 }
 
 input:checked + .slider:before {
-  transform: translateX(26px);
+  transform: translateX(28px);
 }
 
-#modeLabel {
-  font-size: 14px;
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-}
+/* تحسينات خاصة للموبايل - حماية شاملة من كسر التخطيط */
+@media (max-width: 768px) {
+  :root {
+    --spacing-md: 10px;
+    --spacing-lg: 16px;
+    --spacing-xl: 20px;
+  }
 
-@media (max-width: 600px) {
+  body {
+    padding: var(--spacing-xs);
+  }
+
   .container {
-    padding: 15px;
-    border-radius: 10px;
+    padding: var(--spacing-md);
+    margin: var(--spacing-xs);
+    width: calc(100% - calc(2 * var(--spacing-xs)));
+    max-width: calc(100vw - calc(2 * var(--spacing-xs)));
+    box-sizing: border-box;
   }
 
   h2 {
-    font-size: 18px;
+    font-size: 1.2rem;
+    margin-bottom: var(--spacing-md);
   }
 
   input, select, textarea, button {
-    font-size: 14px;
-    padding: 8px;
+    font-size: 16px;
+    padding: var(--spacing-sm) var(--spacing-md);
+    width: 100%;
+    box-sizing: border-box;
   }
 
-  .card {
-    padding: 10px 0;
+  .result {
+    padding: var(--spacing-sm);
+    margin-top: var(--spacing-md);
+    margin-left: 0;
+    margin-right: 0;
+    width: 100%;
+    box-sizing: border-box;
   }
 
-  .btn-toggle {
-    flex: 1;
-    font-size: 14px;
-  }
-
-  .result table {
-    font-size: 13px;
+  .table-container {
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
     overflow-x: auto;
-    display: block;
-    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    box-sizing: border-box;
   }
 
-  table th,
-  table td {
-    padding: 5px;
+  table {
+    font-size: 11px;
+    min-width: 280px;
+    width: auto;
   }
 
-  #modeLabel {
-    font-size: 13px;
+  th, td {
+    padding: 6px 3px;
+    font-size: 10px;
+    min-width: 40px;
+    max-width: 80px;
   }
+
+  th {
+    font-size: 10px;
+    font-weight: 600;
+  }
+}
+
+/* تحسينات للشاشات الصغيرة جداً مع حماية التنسيق */
+@media (max-width: 480px) {
+  .container {
+    margin: 0;
+    border-radius: 0;
+    min-height: 100vh;
+    padding: var(--spacing-md);
+    overflow-x: hidden; /* منع التمرير الأفقي */
+  }
+
+  h2 {
+    font-size: 1.125rem;
+  }
+
+  /* تحسين عرض الجداول على الشاشات الصغيرة جداً */
+  .table-container {
+    margin: var(--spacing-md) calc(-1 * var(--spacing-md));
+    border-radius: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    max-width: calc(100vw - calc(2 * var(--spacing-md)));
+  }
+
+  table {
+    font-size: 10px;
+    width: auto;
+    min-width: 320px; /* حد أدنى للعرض الكامل */
+  }
+
+  th, td {
+    padding: 4px 3px;
+    min-width: 50px;
+    max-width: 70px;
+    font-size: 9px;
+    line-height: 1.2;
+  }
+
+  /* نمط خاص لعرض البيانات المكدسة على الشاشات الصغيرة جداً */
+  .mobile-stack {
+    display: none;
+  }
+
+  @media (max-width: 360px) {
+    .table-container table {
+      display: none;
+    }
+    
+    .mobile-stack {
+      display: block;
+    }
+    
+    .mobile-stack .item {
+      background: var(--card-bg-light);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      padding: var(--spacing-sm);
+      margin-bottom: var(--spacing-sm);
+      box-shadow: var(--shadow-light);
+    }
+    
+    body.dark .mobile-stack .item {
+      background: var(--card-bg-dark);
+      border-color: var(--border-dark);
+    }
+    
+    .mobile-stack .item-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 2px 0;
+      border-bottom: 1px solid rgba(0,0,0,0.1);
+      font-size: 12px;
+    }
+    
+    .mobile-stack .item-row:last-child {
+      border-bottom: none;
+    }
+    
+    .mobile-stack .item-label {
+      font-weight: 600;
+      color: var(--primary-color);
+    }
+    
+    .mobile-stack .item-value {
+      text-align: left;
+      word-break: break-word;
+    }
+  }
+}
+
+/* إضافة فئات مساعدة للتحكم في التخطيط */
+.no-overflow {
+  overflow: hidden !important;
+}
+
+.text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.text-break {
+  word-wrap: break-word !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+}
+
+/* حماية من خروج المحتوى */
+* {
+  max-width: 100%;
+}
+
+input, textarea, select {
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* تحسينات للأجهزة اللوحية */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .container {
+    max-width: 600px;
+    padding: var(--spacing-xl);
+  }
+
+  h2 {
+    font-size: 1.75rem;
+  }
+}
+
+/* تحسينات الأداء والحركة */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* دعم الوضع المظلم على مستوى النظام */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-light: var(--bg-dark);
+    --text-light: var(--text-dark);
+    --card-bg-light: var(--card-bg-dark);
+    --border-color: var(--border-dark);
+  }
+}
+
+/* تحسينات إضافية للمس */
+button, input, select, textarea, .slider {
+  touch-action: manipulation;
+}
+
+/* إضافة قواعد إضافية لحماية التخطيط */
+html, body {
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
+/* حماية شاملة للعناصر */
+.container * {
+  max-width: 100%;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* منع خروج النصوص والصور */
+img, video, iframe, object, embed {
+  max-width: 100% !important;
+  height: auto !important;
+}
+
+/* حماية خاصة للجداول */
+.table-container {
+  contain: layout;
+  isolation: isolate;
+}
+
+/* فئات مساعدة للتحكم الدقيق */
+.text-truncate {
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.text-break {
+  word-wrap: break-word !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  hyphens: auto !important;
+}
+
+.no-wrap {
+  white-space: nowrap !important;
+}
+
+.container-fluid {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+}
+
+/* تحسين الأداء */
+.container, .result, table {
+  will-change: transform;
+}
+
+/* تحسين عرض النصوص الطويلة */
+.text-wrap {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+/* أيقونات تحميل */
+.loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 20px;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: translate(-50%, -50%) rotate(360deg); }
 }
