@@ -14,68 +14,45 @@
   --border-dark: #4a5568;
   --shadow-light: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   --shadow-dark: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
-  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  --border-radius: 12px;
+  --transition: all 0.2s ease-in-out; /* مدة أقصر للانتقالات */
+  --border-radius: 8px; /* زوايا أقل حدة */
   --spacing-xs: 4px;
   --spacing-sm: 8px;
-  --spacing-md: 16px;
-  --spacing-lg: 24px;
-  --spacing-xl: 32px;
+  --spacing-md: 12px; /* تقليل المسافات قليلاً */
+  --spacing-lg: 20px;
+  --spacing-xl: 28px;
 }
 
-/* تحسين الخطوط للشاشات عالية الدقة */
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-  body {
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-}
-
-/* الرسوم المتحركة المحسنة */
-@keyframes slideInUp {
-  from { 
-    opacity: 0; 
-    transform: translateY(30px) scale(0.95); 
-  }
-  to { 
-    opacity: 1; 
-    transform: translateY(0) scale(1); 
-  }
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-}
-
-/* إعدادات أساسية محسنة للموبايل */
-* {
-  box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
-}
-
+/* تحسين عرض الخطوط في WebView */
 html {
   font-size: 16px;
   -webkit-text-size-adjust: 100%;
-  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  /* إزالة التمرير المطاطي في الأندرويد */
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: touch;
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   background-color: var(--bg-light);
   color: var(--text-light);
   direction: rtl;
   margin: 0;
-  padding: var(--spacing-md);
+  padding: var(--spacing-sm); /* تقليل الحشو الخارجي */
   min-height: 100vh;
-  line-height: 1.6;
+  line-height: 1.5;
   transition: var(--transition);
   overflow-x: hidden;
+  /* تحسينات WebView الأندرويد */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  /* منع التمرير المطاطي */
+  overscroll-behavior-y: none;
+  /* تحسين الأداء */
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 body.dark {
@@ -83,20 +60,23 @@ body.dark {
   color: var(--text-dark);
 }
 
-/* الحاوية الرئيسية */
+/* الحاوية الرئيسية محسنة للأندرويد */
 .container {
-  max-width: 480px;
-  width: 100%;
+  max-width: 100%;
+  width: calc(100% - var(--spacing-md));
   margin: 0 auto;
   background: var(--card-bg-light);
-  padding: var(--spacing-lg);
+  padding: var(--spacing-md);
   border-radius: var(--border-radius);
   box-shadow: var(--shadow-light);
   transition: var(--transition);
-  animation: slideInUp 0.6s ease-out;
+  /* إزالة الرسوم المتحركة المعقدة للأندرويد */
   position: relative;
   overflow: hidden;
   box-sizing: border-box;
+  /* تحسين الأداء في WebView */
+  will-change: auto;
+  contain: layout style;
 }
 
 body.dark .container {
@@ -107,38 +87,55 @@ body.dark .container {
 /* العناوين */
 h1, h2, h3, h4, h5, h6 {
   margin: 0 0 var(--spacing-md) 0;
-  font-weight: 600;
-  line-height: 1.2;
+  font-weight: 500; /* خط أقل سماكة */
+  line-height: 1.3;
+  /* تحسين عرض النص في الأندرويد */
+  text-rendering: optimizeLegibility;
 }
 
 h2 {
   text-align: center;
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   color: inherit;
   margin-bottom: var(--spacing-lg);
 }
 
-/* عناصر الإدخال المحسنة للموبايل */
+/* عناصر الإدخال محسنة للأندرويد WebView */
 input, select, textarea {
   width: 100%;
   padding: var(--spacing-md);
   margin: var(--spacing-sm) 0;
   border-radius: var(--border-radius);
-  border: 2px solid var(--border-color);
-  font-size: 16px; /* منع التكبير في iOS */
+  border: 1px solid var(--border-color); /* حد أرفع */
+  font-size: 16px;
   background: var(--card-bg-light);
   color: var(--text-light);
   transition: var(--transition);
+  /* إزالة التأثيرات الافتراضية للأندرويد */
   -webkit-appearance: none;
   appearance: none;
-  min-height: 48px; /* الحد الأدنى للمس السهل */
+  outline: none;
+  min-height: 44px; /* الحد الأدنى المطلوب للمس */
+  /* تحسين الأداء */
+  will-change: border-color;
+  /* منع التكبير التلقائي */
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 input:focus, select:focus, textarea:focus {
-  outline: none;
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
-  transform: translateY(-2px);
+  box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.15);
+  /* إزالة التحويل للأندرويد */
+  transform: none;
+}
+
+/* تحسين خاص لـ Select في الأندرويد */
+select {
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="8" viewBox="0 0 12 8"><path fill="%23999" d="M6 8L0 2h12z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: left 12px center;
+  padding-left: 40px;
 }
 
 body.dark input,
@@ -153,19 +150,19 @@ body.dark input:focus,
 body.dark select:focus,
 body.dark textarea:focus {
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
+  box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.2);
 }
 
 textarea {
   resize: vertical;
-  min-height: 100px;
+  min-height: 80px;
   font-family: inherit;
 }
 
-/* الأزرار المحسنة للمس */
+/* الأزرار محسنة للمس في الأندرويد */
 button {
   width: 100%;
-  min-height: 48px;
+  min-height: 44px;
   padding: var(--spacing-md) var(--spacing-lg);
   margin: var(--spacing-sm) 0;
   border-radius: var(--border-radius);
@@ -173,7 +170,7 @@ button {
   background-color: var(--primary-color);
   color: white;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -184,30 +181,30 @@ button {
   overflow: hidden;
   -webkit-user-select: none;
   user-select: none;
+  /* تحسين الأداء في الأندرويد */
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  will-change: background-color;
 }
 
-button:hover {
-  background-color: var(--primary-hover);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-light);
-}
-
+/* تأثير اللمس للأندرويد */
 button:active {
-  transform: translateY(0);
-  animation: pulse 0.3s ease;
+  background-color: var(--primary-hover);
+  transform: scale(0.98);
 }
 
 button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
   transform: none;
+  pointer-events: none;
 }
 
 .btn-danger {
   background-color: var(--danger-color);
 }
 
-.btn-danger:hover {
+.btn-danger:active {
   background-color: var(--danger-hover);
 }
 
@@ -215,26 +212,27 @@ button:disabled {
   background-color: var(--success-color);
 }
 
-/* نتائج محسنة مع حماية التخطيط */
+/* نتائج محسنة */
 .result {
   margin-top: var(--spacing-lg);
   padding: var(--spacing-md);
-  background-color: rgba(66, 153, 225, 0.05);
+  background-color: rgba(66, 153, 225, 0.08);
   border: 1px solid rgba(66, 153, 225, 0.2);
   border-radius: var(--border-radius);
   transition: var(--transition);
-  animation: fadeIn 0.5s ease-in-out;
   overflow: hidden;
   width: 100%;
   box-sizing: border-box;
+  /* تحسين الأداء */
+  contain: layout style;
 }
 
 body.dark .result {
-  background-color: rgba(66, 153, 225, 0.1);
+  background-color: rgba(66, 153, 225, 0.12);
   border-color: rgba(66, 153, 225, 0.3);
 }
 
-/* جداول محسنة للموبايل مع حماية قوية من التشويه */
+/* جداول محسنة للأندرويد */
 .table-container {
   width: 100%;
   overflow-x: auto;
@@ -245,11 +243,8 @@ body.dark .result {
   box-shadow: var(--shadow-light);
   position: relative;
   box-sizing: border-box;
-}
-
-.table-wrapper {
-  min-width: 100%;
-  overflow: hidden;
+  /* تحسين الأداء */
+  contain: layout;
 }
 
 table {
@@ -259,8 +254,8 @@ table {
   border-spacing: 0;
   font-size: 14px;
   background: var(--card-bg-light);
-  animation: fadeIn 0.5s ease-in-out;
-  table-layout: fixed;
+  /* إزالة الرسوم المتحركة المعقدة */
+  table-layout: auto; /* تغيير إلى auto للمرونة */
   box-sizing: border-box;
 }
 
@@ -269,15 +264,15 @@ body.dark table {
 }
 
 th, td {
-  padding: 8px 4px;
+  padding: 8px 6px;
   text-align: center;
   border: 1px solid var(--border-color);
   vertical-align: middle;
   word-wrap: break-word;
   overflow-wrap: break-word;
-  hyphens: auto;
   box-sizing: border-box;
-  max-width: 0;
+  /* تحسين عرض النصوص الطويلة */
+  max-width: 150px;
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -291,30 +286,14 @@ th {
   white-space: nowrap;
 }
 
-td {
-  white-space: nowrap;
-}
-
+/* تحسين التفاعل مع الخلايا للمس */
 td.expandable {
   cursor: pointer;
   position: relative;
 }
 
-td.expandable:hover {
-  white-space: normal;
-  overflow: visible;
-  z-index: 10;
-  background: var(--card-bg-light);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-  border-radius: 4px;
-  padding: 12px;
-  position: absolute;
-  min-width: 200px;
-  max-width: 300px;
-}
-
-body.dark td.expandable:hover {
-  background: var(--card-bg-dark);
+td.expandable:active {
+  background-color: rgba(66, 153, 225, 0.1);
 }
 
 body.dark th {
@@ -326,7 +305,7 @@ body.dark td {
   border-color: var(--border-dark);
 }
 
-/* مفتاح التبديل المحسن */
+/* مفتاح التبديل محسن للأندرويد */
 .toggle-dark-mode {
   margin-top: var(--spacing-lg);
   text-align: center;
@@ -344,8 +323,8 @@ body.dark td {
 .switch {
   position: relative;
   display: inline-block;
-  width: 60px;
-  height: 32px;
+  width: 52px;
+  height: 28px;
   margin-left: var(--spacing-md);
   vertical-align: middle;
 }
@@ -362,21 +341,22 @@ body.dark td {
   top: 0; left: 0; right: 0; bottom: 0;
   background-color: #cbd5e0;
   transition: var(--transition);
-  border-radius: 32px;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 28px;
+  /* تأثير أبسط للأندرويد */
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .slider:before {
   position: absolute;
   content: "";
-  height: 24px;
-  width: 24px;
+  height: 20px;
+  width: 20px;
   left: 4px;
   bottom: 4px;
   background-color: white;
   transition: var(--transition);
   border-radius: 50%;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 input:checked + .slider {
@@ -384,169 +364,124 @@ input:checked + .slider {
 }
 
 input:checked + .slider:before {
-  transform: translateX(28px);
+  transform: translateX(24px);
 }
 
-/* تحسينات خاصة للموبايل - حماية شاملة من كسر التخطيط */
+/* تحسينات الأندرويد - شاشات مختلفة */
 @media (max-width: 768px) {
-  :root {
-    --spacing-md: 10px;
-    --spacing-lg: 16px;
-    --spacing-xl: 20px;
-  }
-
   body {
     padding: var(--spacing-xs);
   }
 
   .container {
-    padding: var(--spacing-md);
-    margin: var(--spacing-xs);
+    padding: var(--spacing-sm);
     width: calc(100% - calc(2 * var(--spacing-xs)));
-    max-width: calc(100vw - calc(2 * var(--spacing-xs)));
+    max-width: 100%;
     box-sizing: border-box;
   }
 
   h2 {
-    font-size: 1.2rem;
+    font-size: 1.25rem;
     margin-bottom: var(--spacing-md);
   }
 
   input, select, textarea, button {
     font-size: 16px;
     padding: var(--spacing-sm) var(--spacing-md);
-    width: 100%;
-    box-sizing: border-box;
-  }
-
-  .result {
-    padding: var(--spacing-sm);
-    margin-top: var(--spacing-md);
-    margin-left: 0;
-    margin-right: 0;
-    width: 100%;
-    box-sizing: border-box;
-  }
-
-  .table-container {
-    width: 100%;
-    margin-left: 0;
-    margin-right: 0;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    box-sizing: border-box;
   }
 
   table {
-    font-size: 11px;
+    font-size: 12px;
     min-width: 280px;
-    width: auto;
   }
 
   th, td {
-    padding: 6px 3px;
-    font-size: 10px;
-    min-width: 40px;
-    max-width: 80px;
-  }
-
-  th {
-    font-size: 10px;
-    font-weight: 600;
+    padding: 6px 4px;
+    font-size: 11px;
+    max-width: 100px;
   }
 }
 
-/* تحسينات للشاشات الصغيرة جداً مع حماية التنسيق */
+/* شاشات صغيرة جداً */
 @media (max-width: 480px) {
   .container {
     margin: 0;
     border-radius: 0;
-    min-height: 100vh;
-    padding: var(--spacing-md);
-    overflow-x: hidden; /* منع التمرير الأفقي */
+    padding: var(--spacing-sm);
+    width: 100%;
+    max-width: 100%;
   }
 
-  h2 {
-    font-size: 1.125rem;
-  }
-
-  /* تحسين عرض الجداول على الشاشات الصغيرة جداً */
   .table-container {
-    margin: var(--spacing-md) calc(-1 * var(--spacing-md));
+    margin: var(--spacing-md) calc(-1 * var(--spacing-sm));
     border-radius: 0;
-    overflow-x: auto;
-    overflow-y: hidden;
-    max-width: calc(100vw - calc(2 * var(--spacing-md)));
   }
 
   table {
-    font-size: 10px;
-    width: auto;
-    min-width: 320px; /* حد أدنى للعرض الكامل */
+    font-size: 11px;
+    min-width: 300px;
   }
 
   th, td {
     padding: 4px 3px;
-    min-width: 50px;
-    max-width: 70px;
-    font-size: 9px;
-    line-height: 1.2;
-  }
-
-  /* نمط خاص لعرض البيانات المكدسة على الشاشات الصغيرة جداً */
-  .mobile-stack {
-    display: none;
-  }
-
-  @media (max-width: 360px) {
-    .table-container table {
-      display: none;
-    }
-    
-    .mobile-stack {
-      display: block;
-    }
-    
-    .mobile-stack .item {
-      background: var(--card-bg-light);
-      border: 1px solid var(--border-color);
-      border-radius: var(--border-radius);
-      padding: var(--spacing-sm);
-      margin-bottom: var(--spacing-sm);
-      box-shadow: var(--shadow-light);
-    }
-    
-    body.dark .mobile-stack .item {
-      background: var(--card-bg-dark);
-      border-color: var(--border-dark);
-    }
-    
-    .mobile-stack .item-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 2px 0;
-      border-bottom: 1px solid rgba(0,0,0,0.1);
-      font-size: 12px;
-    }
-    
-    .mobile-stack .item-row:last-child {
-      border-bottom: none;
-    }
-    
-    .mobile-stack .item-label {
-      font-weight: 600;
-      color: var(--primary-color);
-    }
-    
-    .mobile-stack .item-value {
-      text-align: left;
-      word-break: break-word;
-    }
+    font-size: 10px;
+    max-width: 80px;
   }
 }
 
-/* إضافة فئات مساعدة للتحكم في التخطيط */
+/* عرض مكدس للشاشات الصغيرة جداً */
+@media (max-width: 360px) {
+  .table-container table {
+    display: none;
+  }
+  
+  .mobile-stack {
+    display: block;
+  }
+  
+  .mobile-stack .item {
+    background: var(--card-bg-light);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-sm);
+    margin-bottom: var(--spacing-sm);
+    box-shadow: var(--shadow-light);
+  }
+  
+  body.dark .mobile-stack .item {
+    background: var(--card-bg-dark);
+    border-color: var(--border-dark);
+  }
+  
+  .mobile-stack .item-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+    font-size: 12px;
+  }
+  
+  .mobile-stack .item-row:last-child {
+    border-bottom: none;
+  }
+  
+  .mobile-stack .item-label {
+    font-weight: 600;
+    color: var(--primary-color);
+  }
+  
+  .mobile-stack .item-value {
+    text-align: left;
+    word-break: break-word;
+  }
+}
+
+.mobile-stack {
+  display: none;
+}
+
+/* فئات مساعدة */
 .no-overflow {
   overflow: hidden !important;
 }
@@ -563,38 +498,40 @@ input:checked + .slider:before {
   overflow-wrap: break-word !important;
 }
 
-/* حماية من خروج المحتوى */
+/* حماية شاملة من خروج المحتوى */
 * {
   max-width: 100%;
+  box-sizing: border-box;
 }
 
-input, textarea, select {
-  max-width: 100% !important;
-  box-sizing: border-box !important;
+html, body {
+  overflow-x: hidden;
 }
 
-/* تحسينات للأجهزة اللوحية */
-@media (min-width: 769px) and (max-width: 1024px) {
-  .container {
-    max-width: 600px;
-    padding: var(--spacing-xl);
-  }
-
-  h2 {
-    font-size: 1.75rem;
-  }
+/* تحسينات الأداء للأندرويد */
+.container, .result {
+  /* تحسين الأداء */
+  contain: layout style;
+  will-change: auto;
 }
 
-/* تحسينات الأداء والحركة */
-@media (prefers-reduced-motion: reduce) {
+/* إزالة التأثيرات المعقدة للأجهزة الضعيفة */
+@media (max-device-width: 768px) {
   * {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    animation-duration: 0.1s !important;
+    transition-duration: 0.1s !important;
+  }
+  
+  .container {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  body.dark .container {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   }
 }
 
-/* دعم الوضع المظلم على مستوى النظام */
+/* تحسين للوضع المظلم التلقائي */
 @media (prefers-color-scheme: dark) {
   :root {
     --bg-light: var(--bg-dark);
@@ -604,81 +541,30 @@ input, textarea, select {
   }
 }
 
-/* تحسينات إضافية للمس */
-button, input, select, textarea, .slider {
-  touch-action: manipulation;
+/* تحسينات خاصة لـ WebView */
+/* منع التحديد غير المرغوب فيه */
+* {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
-/* إضافة قواعد إضافية لحماية التخطيط */
-html, body {
-  overflow-x: hidden;
-  box-sizing: border-box;
+/* السماح بالتحديد للنصوص والإدخالات فقط */
+input, textarea, .result, p, span, div {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
 }
 
-*, *::before, *::after {
-  box-sizing: border-box;
-  max-width: 100%;
-}
-
-/* حماية شاملة للعناصر */
-.container * {
-  max-width: 100%;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-}
-
-/* منع خروج النصوص والصور */
-img, video, iframe, object, embed {
-  max-width: 100% !important;
-  height: auto !important;
-}
-
-/* حماية خاصة للجداول */
-.table-container {
-  contain: layout;
-  isolation: isolate;
-}
-
-/* فئات مساعدة للتحكم الدقيق */
-.text-truncate {
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  white-space: nowrap !important;
-}
-
-.text-break {
-  word-wrap: break-word !important;
-  word-break: break-word !important;
-  overflow-wrap: break-word !important;
-  hyphens: auto !important;
-}
-
-.no-wrap {
-  white-space: nowrap !important;
-}
-
-.container-fluid {
-  width: 100% !important;
-  max-width: 100% !important;
-  overflow: hidden !important;
-}
-
-/* تحسين الأداء */
-.container, .result, table {
-  will-change: transform;
-}
-
-/* تحسين عرض النصوص الطويلة */
-.text-wrap {
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  hyphens: auto;
-}
-
-/* أيقونات تحميل */
+/* تحسين أيقونة التحميل */
 .loading {
   opacity: 0.7;
   pointer-events: none;
+  position: relative;
 }
 
 .loading::after {
@@ -687,8 +573,8 @@ img, video, iframe, object, embed {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
   border: 2px solid transparent;
   border-top: 2px solid currentColor;
   border-radius: 50%;
@@ -697,4 +583,23 @@ img, video, iframe, object, embed {
 
 @keyframes spin {
   to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* تحسينات إضافية للأندرويد */
+/* منع التمرير المطاطي */
+body {
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* تحسين عرض الخطوط */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* تحسين الأداء العام */
+.container * {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
