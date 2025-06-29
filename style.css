@@ -204,9 +204,40 @@ input:checked + .slider:before {
 @media (max-width: 600px) {
   .container {
     padding: 15px;
+    border-radius: 10px;
   }
 
   h2 {
-    font-size: 20px;
+    font-size: 18px;
+  }
+
+  input, select, textarea, button {
+    font-size: 14px;
+    padding: 8px;
+  }
+
+  .card {
+    padding: 10px 0;
+  }
+
+  .btn-toggle {
+    flex: 1;
+    font-size: 14px;
+  }
+
+  .result table {
+    font-size: 13px;
+    overflow-x: auto;
+    display: block;
+    white-space: nowrap;
+  }
+
+  table th,
+  table td {
+    padding: 5px;
+  }
+
+  #modeLabel {
+    font-size: 13px;
   }
 }
