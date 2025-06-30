@@ -283,33 +283,12 @@ function updateSelectedWallet() {
 }
 
 function showAlert(message, type = 'info') {
-    // إنشاء عنصر التنبيه
-    const alert = document.createElement('div');
-    alert.className = `alert alert-${type}`;
-    alert.innerHTML = `
-        <i class="fa-solid fa-${getAlertIcon(type)}"></i>
-        <span>${message}</span>
-    `;
-    
-    // إضافة التنبيه إلى أعلى الصفحة
-    const container = document.querySelector('.container');
-    container.insertBefore(alert, container.firstChild);
-    
-    // إزالة التنبيه بعد 3 ثوان
-    setTimeout(() => {
-        if (alert.parentNode) {
-            alert.remove();
-        }
-    }, 3000);
-}
-
-function getAlertIcon(type) {
-    switch (type) {
-        case 'success': return 'check-circle';
-        case 'error': return 'exclamation-circle';
-        case 'warning': return 'exclamation-triangle';
-        case 'info': return 'info-circle';
-        default: return 'info-circle';
+    // استخدم نظام التوست الاحترافي في الزاوية السفلية اليمنى
+    if (typeof showToast === 'function') {
+        showToast(message, type);
+    } else {
+        // fallback: alert عادي إذا لم يوجد توست
+        alert(message);
     }
 }
 
