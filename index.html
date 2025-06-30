@@ -1,61 +1,87 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-  <meta charset="UTF-8">
-  <title>Wallet Limit Tracker</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Wallet Limit Tracker</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
-  <div class="container">
-    <h2><i class="fa-solid fa-wallet"></i> Wallet Limit Tracker</h2>
+    <div class="container">
+        <header class="app-header">
+            <h1><i class="fa-solid fa-wallet"></i> Wallet Limit Tracker</h1>
+        </header>
 
-    <div class="card">
-      <input type="text" id="newWallet" placeholder="أدخل رقم محفظة جديدة">
-      <button onclick="addWallet()">
-        <i class="fa-solid fa-circle-plus"></i>
-        <span class="btn-text">إضافة المحفظة</span>
-      </button>
-      <button onclick="deleteSelectedWallet()" class="btn-danger">
-        <i class="fa-solid fa-trash-can"></i>
-        <span class="btn-text">حذف المحفظة المحددة</span>
-      </button>
+        <main class="app-main">
+            <!-- إدارة المحافظ -->
+            <section class="card wallet-management">
+                <h2><i class="fa-solid fa-plus-circle"></i> إدارة المحافظ</h2>
+                <div class="input-group">
+                    <input type="text" id="newWallet" placeholder="أدخل رقم محفظة جديدة" class="wallet-input">
+                    <button onclick="addWallet()" class="btn btn-primary">
+                        <i class="fa-solid fa-circle-plus"></i>
+                        <span>إضافة المحفظة</span>
+                    </button>
+                </div>
+                <button onclick="deleteSelectedWallet()" class="btn btn-danger btn-full">
+                    <i class="fa-solid fa-trash-can"></i>
+                    <span>حذف المحفظة المحددة</span>
+                </button>
+            </section>
+
+            <!-- اختيار المحفظة والمعاملات -->
+            <section class="card transaction-section">
+                <h2><i class="fa-solid fa-exchange-alt"></i> المعاملات</h2>
+                
+                <div class="wallet-selector">
+                    <select id="walletSelect" onchange="updateSelectedWallet()" class="wallet-select">
+                        <option value="">اختر رقم المحفظة</option>
+                    </select>
+                </div>
+
+                <div class="transaction-type-buttons">
+                    <button onclick="selectTransactionType('deposit')" id="btnDeposit" class="btn btn-toggle btn-deposit">
+                        <i class="fa-solid fa-arrow-down"></i>
+                        <span>دخول</span>
+                    </button>
+                    <button onclick="selectTransactionType('withdraw')" id="btnWithdraw" class="btn btn-toggle btn-withdraw">
+                        <i class="fa-solid fa-arrow-up"></i>
+                        <span>خروج</span>
+                    </button>
+                </div>
+
+                <div class="transaction-inputs">
+                    <input type="hidden" id="transactionType">
+                    <input type="number" id="amount" placeholder="مبلغ المعاملة" class="amount-input">
+                    <textarea id="note" placeholder="ملاحظة (اختياري)" class="note-textarea"></textarea>
+                    <button onclick="addTransaction()" class="btn btn-success btn-full">
+                        <i class="fa-solid fa-money-bill-wave"></i>
+                        <span>إضافة معاملة</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- إعدادات الوضع المظلم -->
+            <section class="card settings-section">
+                <div class="dark-mode-toggle">
+                    <label class="switch">
+                        <input type="checkbox" id="darkModeToggle">
+                        <span class="slider"></span>
+                    </label>
+                    <span id="modeLabel" class="mode-label">
+                        <i class="fa fa-sun"></i>
+                        <span>وضع نهاري</span>
+                    </span>
+                </div>
+            </section>
+
+            <!-- النتائج -->
+            <section id="output" class="result-section"></section>
+        </main>
     </div>
 
-    <div class="card">
-      <select id="walletSelect" onchange="updateSelectedWallet()">
-        <option value="">اختر رقم المحفظة</option>
-      </select>
-
-      <div style="display: flex; gap: 10px;">
-        <button onclick="selectTransactionType('deposit')" id="btnDeposit" class="btn-toggle">
-          <i class="fa-solid fa-arrow-down"></i> دخول
-        </button>
-        <button onclick="selectTransactionType('withdraw')" id="btnWithdraw" class="btn-toggle">
-          <i class="fa-solid fa-arrow-up"></i> خروج
-        </button>
-      </div>
-
-      <input type="hidden" id="transactionType">
-      <input type="number" id="amount" placeholder="مبلغ المعاملة">
-      <textarea id="note" placeholder="ملاحظة (اختياري)"></textarea>
-      <button onclick="addTransaction()" class="sticky-action">
-        <i class="fa-solid fa-money-bill-wave"></i>
-        <span class="btn-text">إضافة معاملة</span>
-      </button>
-    </div>
-
-    <div class="card toggle-dark-mode">
-      <label class="switch">
-        <input type="checkbox" id="darkModeToggle">
-        <span class="slider"></span>
-      </label>
-      <span id="modeLabel"><i class="fa fa-sun"></i> وضع نهاري</span>
-    </div>
-
-    <div id="output" class="result card"></div>
-  </div>
-
-  <script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
+
