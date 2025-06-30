@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>تقرير المحافظ - Wallet Report</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="app-header">
+            <h1><i class="fa-solid fa-chart-line"></i> تقرير المحافظ</h1>
+            <nav class="navigation">
+                <a href="index.html" class="nav-link">
+                    <i class="fa-solid fa-arrow-right"></i>
+                    <span>العودة للتطبيق الرئيسي</span>
+                </a>
+            </nav>
+        </header>
+
+        <main class="app-main">
+            <!-- إعدادات التقرير -->
+            <section class="card report-controls">
+                <h2><i class="fa-solid fa-filter"></i> إعدادات التقرير</h2>
+                <div class="control-group">
+                    <button onclick="refreshReport()" class="btn btn-primary">
+                        <i class="fa-solid fa-refresh"></i>
+                        <span>تحديث التقرير</span>
+                    </button>
+                    <button onclick="exportReport()" class="btn btn-secondary">
+                        <i class="fa-solid fa-download"></i>
+                        <span>تصدير التقرير</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- ملخص عام -->
+            <section class="card summary-section">
+                <h2><i class="fa-solid fa-chart-pie"></i> الملخص العام</h2>
+                <div class="summary-grid" id="summaryGrid">
+                    <!-- سيتم ملؤها بواسطة JavaScript -->
+                </div>
+            </section>
+
+            <!-- تفاصيل المحافظ -->
+            <section class="card wallets-report">
+                <h2><i class="fa-solid fa-wallet"></i> تفاصيل المحافظ</h2>
+                <div class="report-filters">
+                    <select id="statusFilter" onchange="filterWallets()">
+                        <option value="all">جميع المحافظ</option>
+                        <option value="active">المحافظ النشطة</option>
+                        <option value="stopped">المحافظ الموقوفة</option>
+                        <option value="warning">محافظ تحتاج انتباه</option>
+                    </select>
+                </div>
+                <div class="wallets-container" id="walletsContainer">
+                    <!-- سيتم ملؤها بواسطة JavaScript -->
+                </div>
+            </section>
+
+            <!-- إعدادات الوضع المظلم -->
+            <section class="card settings-section">
+                <div class="dark-mode-toggle">
+                    <label class="switch">
+                        <input type="checkbox" id="darkModeToggle">
+                        <span class="slider"></span>
+                    </label>
+                    <span id="modeLabel" class="mode-label">
+                        <i class="fa fa-sun"></i>
+                        <span>وضع نهاري</span>
+                    </span>
+                </div>
+            </section>
+        </main>
+
+        <!-- رسالة في حالة عدم وجود محافظ -->
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <div class="empty-content">
+                <i class="fa-solid fa-wallet"></i>
+                <h3>لا توجد محافظ مضافة</h3>
+                <p>يرجى إضافة محافظ من التطبيق الرئيسي لعرض التقرير</p>
+                <a href="index.html" class="btn btn-primary">
+                    <i class="fa-solid fa-plus"></i>
+                    <span>إضافة محفظة</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="report.js"></script>
+</body>
+</html>
+
