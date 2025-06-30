@@ -22,7 +22,7 @@ function addWallet() {
 
 function populateWalletList() {
     const select = document.getElementById("walletSelect");
-    select.innerHTML = '<option value="">اختر رقم المحفظة</option>';
+    select.innerHTML = \'<option value="">اختر رقم المحفظة</option>\';
     Object.keys(wallets).forEach(phone => {
         const option = document.createElement("option");
         option.value = phone;
@@ -38,7 +38,6 @@ function deleteSelectedWallet() {
 
     delete wallets[phone];
     saveToLocalStorage();
-    populateWalletList();
     document.getElementById("output").innerHTML = "";
     showAlert("تم حذف المحفظة بنجاح", "success");
 }
@@ -47,15 +46,15 @@ function selectTransactionType(type) {
     document.getElementById("transactionType").value = type;
     
     // إزالة الفئة النشطة من جميع الأزرار
-    document.querySelectorAll('.btn-toggle').forEach(btn => {
-        btn.classList.remove('active');
+    document.querySelectorAll(\".btn-toggle\").forEach(btn => {
+        btn.classList.remove(\'active\');
     });
     
     // إضافة الفئة النشطة للزر المحدد
-    if (type === 'deposit') {
-        document.getElementById("btnDeposit").classList.add('active');
-    } else if (type === 'withdraw') {
-        document.getElementById("btnWithdraw").classList.add('active');
+    if (type === \'deposit\') {
+        document.getElementById("btnDeposit").classList.add(\'active\');
+    } else if (type === \'withdraw\') {
+        document.getElementById("btnWithdraw").classList.add(\'active\');
     }
 }
 
@@ -72,7 +71,28 @@ function addTransaction() {
     const now = new Date();
     const date = formatLocalDateTime(now);
 
+    // Calculate current daily and monthly deposits for the selected wallet
+    const today = date.slice(0, 10);
+    const currentMonth = date.slice(0, 7);
+
+    const dailyDeposits = wallets[phone].transactions
+        .filter(t => t.type === "deposit" && t.date.slice(0, 10) === today)
+        .reduce((sum, t) => sum + t.amount, 0);
+
+    const monthlyDeposits = wallets[phone].transactions
+        .filter(t => t.type === "deposit" && t.date.slice(0, 7) === currentMonth)
+        .reduce((sum, t) => sum + t.amount, 0);
+
     if (type === "deposit") {
+        // Check daily limit
+        if (dailyDeposits + amount > DAILY_LIMIT) {
+            return showAlert(`تجاوز الحد اليومي للإيداع. الحد المتبقي هو ${Math.max(0, DAILY_LIMIT - dailyDeposits).toFixed(2)} جنيه.`, "error");
+        }
+        // Check monthly limit
+        if (monthlyDeposits + amount > MONTHLY_LIMIT) {
+            return showAlert(`تجاوز الحد الشهري للإيداع. الحد المتبقي هو ${Math.max(0, MONTHLY_LIMIT - monthlyDeposits).toFixed(2)} جنيه.`, "error");
+        }
+
         wallets[phone].balance += amount;
         wallets[phone].transactions.push({ amount, date, type, note });
         showAlert("تم إضافة عملية الإيداع بنجاح", "success");
@@ -98,11 +118,11 @@ function clearTransactionForm() {
 
 function formatLocalDateTime(date) {
     const yyyy = date.getFullYear();
-    const mm = String(date.getMonth() + 1).padStart(2, '0');
-    const dd = String(date.getDate()).padStart(2, '0');
-    const hh = String(date.getHours()).padStart(2, '0');
-    const min = String(date.getMinutes()).padStart(2, '0');
-    const ss = String(date.getSeconds()).padStart(2, '0');
+    const mm = String(date.getMonth() + 1).padStart(2, \'0\');
+    const dd = String(date.getDate()).padStart(2, \'0\');
+    const hh = String(date.getHours()).padStart(2, \'0\');
+    const min = String(date.getMinutes()).padStart(2, \'0\');
+    const ss = String(date.getSeconds()).padStart(2, \'0\');
     return `${yyyy}-${mm}-${dd} ${hh}:${min}:${ss}`;
 }
 
@@ -137,7 +157,7 @@ function updateLimits(phone) {
                     <span class="label">المتبقي من الحد الشهري:</span>
                     <span class="value ${getMonthlyLimitClass(monthlyLeft)}">${monthlyLeft.toFixed(2)} جنيه</span>
                 </div>
-                ${monthlyTotal > MONTHLY_LIMIT ? '<div class="alert alert-danger"><i class="fa-solid fa-exclamation-triangle"></i> تم تجاوز الحد الشهري!</div>' : ''}
+                ${monthlyTotal > MONTHLY_LIMIT ? \'<div class="alert alert-danger"><i class="fa-solid fa-exclamation-triangle"></i> تم تجاوز الحد الشهري!</div>\' : \'\'}
             </div>
         </div>
     `;
@@ -166,7 +186,7 @@ function updateLimits(phone) {
             const transactionNumber = wallets[phone].transactions.length - i;
             const typeText = t.type === "deposit" ? "دخول" : "خروج";
             const typeClass = t.type === "deposit" ? "deposit" : "withdraw";
-            const amountText = `${t.amount < 0 ? '-' : ''}${Math.abs(t.amount)} جنيه`;
+            const amountText = `${t.amount < 0 ? \'-\' : \'\'}${Math.abs(t.amount)} جنيه`;
             
             resultHTML += `
                 <tr>
@@ -174,12 +194,12 @@ function updateLimits(phone) {
                     <td><span class="transaction-type ${typeClass}">${typeText}</span></td>
                     <td class="amount ${typeClass}">${amountText}</td>
                     <td class="date">${formatDisplayDate(t.date)}</td>
-                    <td class="note">${t.note || '-'}</td>
+                    <td class="note">${t.note || \'-\'}</td>
                     <td class="actions">
-                        <button onclick="editTransaction('${phone}', ${index})" class="btn-action btn-edit" title="تعديل">
+                        <button onclick="editTransaction(\'${phone}\', ${index})" class="btn-action btn-edit" title="تعديل">
                             <i class="fa-solid fa-edit"></i>
                         </button>
-                        <button onclick="deleteTransaction('${phone}', ${index})" class="btn-action btn-delete" title="حذف">
+                        <button onclick="deleteTransaction(\'${phone}\', ${index})" class="btn-action btn-delete" title="حذف">
                             <i class="fa-solid fa-trash"></i>
                         </button>
                     </td>
@@ -205,22 +225,22 @@ function formatDisplayDate(dateString) {
     const transactionDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
     
     if (transactionDate.getTime() === today.getTime()) {
-        return `اليوم ${date.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })}`;
+        return `اليوم ${date.toLocaleTimeString(\'ar-EG\', { hour: \'2-digit\', minute: \'2-digit\' })}`;
     } else {
-        return date.toLocaleDateString('ar-EG') + ' ' + date.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+        return date.toLocaleDateString(\'ar-EG\') + \' \' + date.toLocaleTimeString(\'ar-EG\', { hour: \'2-digit\', minute: \'2-digit\' });
     }
 }
 
 function getDailyLimitClass(dailyLeft) {
-    if (dailyLeft === 0) return 'danger';
-    if (dailyLeft <= 5000) return 'warning';
-    return 'success';
+    if (dailyLeft === 0) return \'danger\';
+    if (dailyLeft <= 5000) return \'warning\';
+    return \'success\';
 }
 
 function getMonthlyLimitClass(monthlyLeft) {
-    if (monthlyLeft === 0) return 'danger';
-    if (monthlyLeft <= 10000) return 'warning';
-    return 'success';
+    if (monthlyLeft === 0) return \'danger\';
+    if (monthlyLeft <= 10000) return \'warning\';
+    return \'success\';
 }
 
 function deleteTransaction(phone, index) {
@@ -261,9 +281,9 @@ function updateSelectedWallet() {
     }
 }
 
-function showAlert(message, type = 'info') {
+function showAlert(message, type = \'info\') {
     // إنشاء عنصر التنبيه
-    const alert = document.createElement('div');
+    const alert = document.createElement(\'div\');
     alert.className = `alert alert-${type}`;
     alert.innerHTML = `
         <i class="fa-solid fa-${getAlertIcon(type)}"></i>
@@ -271,7 +291,7 @@ function showAlert(message, type = 'info') {
     `;
     
     // إضافة التنبيه إلى أعلى الصفحة
-    const container = document.querySelector('.container');
+    const container = document.querySelector(\".container\");
     container.insertBefore(alert, container.firstChild);
     
     // إزالة التنبيه بعد 3 ثوان
@@ -284,17 +304,17 @@ function showAlert(message, type = 'info') {
 
 function getAlertIcon(type) {
     switch (type) {
-        case 'success': return 'check-circle';
-        case 'error': return 'exclamation-circle';
-        case 'warning': return 'exclamation-triangle';
-        case 'info': return 'info-circle';
-        default: return 'info-circle';
+        case \'success\': return \'check-circle\';
+        case \'error\': return \'exclamation-circle\';
+        case \'warning\': return \'exclamation-triangle\';
+        case \'info\': return \'info-circle\';
+        default: return \'info-circle\';
     }
 }
 
 // إضافة أنماط CSS للتنبيهات والعناصر الجديدة
 function addDynamicStyles() {
-    const style = document.createElement('style');
+    const style = document.createElement(\'style\');
     style.textContent = `
         .alert {
             padding: 12px 16px;
@@ -494,24 +514,13 @@ function addDynamicStyles() {
     document.head.appendChild(style);
 }
 
-// تهيئة التطبيق
+// Initial loads
 document.addEventListener("DOMContentLoaded", () => {
-    // إضافة الأنماط الديناميكية
-    addDynamicStyles();
-    
-    // تحميل البيانات المحفوظة
-    const saved = localStorage.getItem("wallets");
-    if (saved) {
-        wallets = JSON.parse(saved);
-        for (const phone in wallets) {
-            if (!wallets[phone].transactions) wallets[phone].transactions = [];
-            if (typeof wallets[phone].balance !== "number") wallets[phone].balance = 0;
-        }
-        saveToLocalStorage();
-    }
+    loadWalletData();
     populateWalletList();
+    addDynamicStyles();
 
-    // إعداد الوضع المظلم
+    // Dark mode toggle
     const darkToggle = document.getElementById("darkModeToggle");
     const modeLabel = document.getElementById("modeLabel");
     const savedMode = localStorage.getItem("darkMode");
@@ -519,36 +528,28 @@ document.addEventListener("DOMContentLoaded", () => {
     if (savedMode === "dark") {
         document.body.classList.add("dark");
         darkToggle.checked = true;
-        modeLabel.innerHTML = '<i class="fa fa-moon"></i><span>وضع ليلي</span>';
+        modeLabel.innerHTML = \'<i class="fa fa-moon"></i><span>وضع ليلي</span>\';
     }
 
     darkToggle.addEventListener("change", () => {
         document.body.classList.toggle("dark");
         const isDark = document.body.classList.contains("dark");
         modeLabel.innerHTML = isDark
-            ? '<i class="fa fa-moon"></i><span>وضع ليلي</span>'
-            : '<i class="fa fa-sun"></i><span>وضع نهاري</span>';
+            ? \'<i class="fa fa-moon"></i><span>وضع ليلي</span>\'
+            : \'<i class="fa fa-sun"></i><span>وضع نهاري</span>\';
         localStorage.setItem("darkMode", isDark ? "dark" : "light");
     });
-    
-    // تحسين تجربة اللمس للأزرار
-    document.querySelectorAll('.btn').forEach(btn => {
-        btn.addEventListener('touchstart', function() {
-            this.style.transform = 'scale(0.95)';
-        });
-        
-        btn.addEventListener('touchend', function() {
-            this.style.transform = '';
-        });
-    });
-    
-    // منع التكبير عند التركيز على حقول الإدخال في iOS
-    if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
-        document.querySelectorAll('input, select, textarea').forEach(input => {
-            input.addEventListener('focus', function() {
-                this.style.fontSize = '16px';
-            });
-        });
-    }
 });
+
+function loadWalletData() {
+    const saved = localStorage.getItem("wallets");
+    if (saved) {
+        wallets = JSON.parse(saved);
+        // Ensure data integrity
+        for (const phone in wallets) {
+            if (!wallets[phone].transactions) wallets[phone].transactions = [];
+            if (typeof wallets[phone].balance !== "number") wallets[phone].balance = 0;
+        }
+    }
+}
 
