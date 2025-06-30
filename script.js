@@ -22,7 +22,7 @@ function addWallet() {
 
 function populateWalletList() {
     const select = document.getElementById("walletSelect");
-    select.innerHTML = \'<option value="">اختر رقم المحفظة</option>\';
+    select.innerHTML = '<option value="">اختر رقم المحفظة</option>';
     Object.keys(wallets).forEach(phone => {
         const option = document.createElement("option");
         option.value = phone;
@@ -38,6 +38,7 @@ function deleteSelectedWallet() {
 
     delete wallets[phone];
     saveToLocalStorage();
+    populateWalletList(); // Added this line
     document.getElementById("output").innerHTML = "";
     showAlert("تم حذف المحفظة بنجاح", "success");
 }
@@ -46,15 +47,15 @@ function selectTransactionType(type) {
     document.getElementById("transactionType").value = type;
     
     // إزالة الفئة النشطة من جميع الأزرار
-    document.querySelectorAll(\".btn-toggle\").forEach(btn => {
-        btn.classList.remove(\'active\');
+    document.querySelectorAll('.btn-toggle').forEach(btn => {
+        btn.classList.remove('active');
     });
     
     // إضافة الفئة النشطة للزر المحدد
-    if (type === \'deposit\') {
-        document.getElementById("btnDeposit").classList.add(\'active\');
-    } else if (type === \'withdraw\') {
-        document.getElementById("btnWithdraw").classList.add(\'active\');
+    if (type === 'deposit') {
+        document.getElementById("btnDeposit").classList.add('active');
+    } else if (type === 'withdraw') {
+        document.getElementById("btnWithdraw").classList.add('active');
     }
 }
 
@@ -118,11 +119,11 @@ function clearTransactionForm() {
 
 function formatLocalDateTime(date) {
     const yyyy = date.getFullYear();
-    const mm = String(date.getMonth() + 1).padStart(2, \'0\');
-    const dd = String(date.getDate()).padStart(2, \'0\');
-    const hh = String(date.getHours()).padStart(2, \'0\');
-    const min = String(date.getMinutes()).padStart(2, \'0\');
-    const ss = String(date.getSeconds()).padStart(2, \'0\');
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
+    const dd = String(date.getDate()).padStart(2, '0');
+    const hh = String(date.getHours()).padStart(2, '0');
+    const min = String(date.getMinutes()).padStart(2, '0');
+    const ss = String(date.getSeconds()).padStart(2, '0');
     return `${yyyy}-${mm}-${dd} ${hh}:${min}:${ss}`;
 }
 
@@ -157,7 +158,7 @@ function updateLimits(phone) {
                     <span class="label">المتبقي من الحد الشهري:</span>
                     <span class="value ${getMonthlyLimitClass(monthlyLeft)}">${monthlyLeft.toFixed(2)} جنيه</span>
                 </div>
-                ${monthlyTotal > MONTHLY_LIMIT ? \'<div class="alert alert-danger"><i class="fa-solid fa-exclamation-triangle"></i> تم تجاوز الحد الشهري!</div>\' : \'\'}
+                ${monthlyTotal > MONTHLY_LIMIT ? '<div class="alert alert-danger"><i class="fa-solid fa-exclamation-triangle"></i> تم تجاوز الحد الشهري!</div>' : ''}
             </div>
         </div>
     `;
@@ -186,7 +187,7 @@ function updateLimits(phone) {
             const transactionNumber = wallets[phone].transactions.length - i;
             const typeText = t.type === "deposit" ? "دخول" : "خروج";
             const typeClass = t.type === "deposit" ? "deposit" : "withdraw";
-            const amountText = `${t.amount < 0 ? \'-\' : \'\'}${Math.abs(t.amount)} جنيه`;
+            const amountText = `${t.amount < 0 ? '-' : ''}${Math.abs(t.amount)} جنيه`;
             
             resultHTML += `
                 <tr>
@@ -194,12 +195,12 @@ function updateLimits(phone) {
                     <td><span class="transaction-type ${typeClass}">${typeText}</span></td>
                     <td class="amount ${typeClass}">${amountText}</td>
                     <td class="date">${formatDisplayDate(t.date)}</td>
-                    <td class="note">${t.note || \'-\'}</td>
+                    <td class="note">${t.note || '-'}</td>
                     <td class="actions">
-                        <button onclick="editTransaction(\'${phone}\', ${index})" class="btn-action btn-edit" title="تعديل">
+                        <button onclick="editTransaction('${phone}', ${index})" class="btn-action btn-edit" title="تعديل">
                             <i class="fa-solid fa-edit"></i>
                         </button>
-                        <button onclick="deleteTransaction(\'${phone}\', ${index})" class="btn-action btn-delete" title="حذف">
+                        <button onclick="deleteTransaction('${phone}', ${index})" class="btn-action btn-delete" title="حذف">
                             <i class="fa-solid fa-trash"></i>
                         </button>
                     </td>
@@ -225,22 +226,22 @@ function formatDisplayDate(dateString) {
     const transactionDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
     
     if (transactionDate.getTime() === today.getTime()) {
-        return `اليوم ${date.toLocaleTimeString(\'ar-EG\', { hour: \'2-digit\', minute: \'2-digit\' })}`;
+        return `اليوم ${date.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })}`;
     } else {
-        return date.toLocaleDateString(\'ar-EG\') + \' \' + date.toLocaleTimeString(\'ar-EG\', { hour: \'2-digit\', minute: \'2-digit\' });
+        return date.toLocaleDateString('ar-EG') + ' ' + date.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
     }
 }
 
 function getDailyLimitClass(dailyLeft) {
-    if (dailyLeft === 0) return \'danger\';
-    if (dailyLeft <= 5000) return \'warning\';
-    return \'success\';
+    if (dailyLeft === 0) return 'danger';
+    if (dailyLeft <= 5000) return 'warning';
+    return 'success';
 }
 
 function getMonthlyLimitClass(monthlyLeft) {
-    if (monthlyLeft === 0) return \'danger\';
-    if (monthlyLeft <= 10000) return \'warning\';
-    return \'success\';
+    if (monthlyLeft === 0) return 'danger';
+    if (monthlyLeft <= 10000) return 'warning';
+    return 'success';
 }
 
 function deleteTransaction(phone, index) {
@@ -281,9 +282,9 @@ function updateSelectedWallet() {
     }
 }
 
-function showAlert(message, type = \'info\') {
+function showAlert(message, type = 'info') {
     // إنشاء عنصر التنبيه
-    const alert = document.createElement(\'div\');
+    const alert = document.createElement('div');
     alert.className = `alert alert-${type}`;
     alert.innerHTML = `
         <i class="fa-solid fa-${getAlertIcon(type)}"></i>
@@ -291,7 +292,7 @@ function showAlert(message, type = \'info\') {
     `;
     
     // إضافة التنبيه إلى أعلى الصفحة
-    const container = document.querySelector(\".container\");
+    const container = document.querySelector('.container');
     container.insertBefore(alert, container.firstChild);
     
     // إزالة التنبيه بعد 3 ثوان
@@ -304,17 +305,17 @@ function showAlert(message, type = \'info\') {
 
 function getAlertIcon(type) {
     switch (type) {
-        case \'success\': return \'check-circle\';
-        case \'error\': return \'exclamation-circle\';
-        case \'warning\': return \'exclamation-triangle\';
-        case \'info\': return \'info-circle\';
-        default: return \'info-circle\';
+        case 'success': return 'check-circle';
+        case 'error': return 'exclamation-circle';
+        case 'warning': return 'exclamation-triangle';
+        case 'info': return 'info-circle';
+        default: return 'info-circle';
     }
 }
 
 // إضافة أنماط CSS للتنبيهات والعناصر الجديدة
 function addDynamicStyles() {
-    const style = document.createElement(\'style\');
+    const style = document.createElement('style');
     style.textContent = `
         .alert {
             padding: 12px 16px;
@@ -528,15 +529,15 @@ document.addEventListener("DOMContentLoaded", () => {
     if (savedMode === "dark") {
         document.body.classList.add("dark");
         darkToggle.checked = true;
-        modeLabel.innerHTML = \'<i class="fa fa-moon"></i><span>وضع ليلي</span>\';
+        modeLabel.innerHTML = '<i class="fa fa-moon"></i><span>وضع ليلي</span>';
     }
 
     darkToggle.addEventListener("change", () => {
         document.body.classList.toggle("dark");
         const isDark = document.body.classList.contains("dark");
         modeLabel.innerHTML = isDark
-            ? \'<i class="fa fa-moon"></i><span>وضع ليلي</span>\'
-            : \'<i class="fa fa-sun"></i><span>وضع نهاري</span>\';
+            ? '<i class="fa fa-moon"></i><span>وضع ليلي</span>'
+            : '<i class="fa fa-sun"></i><span>وضع نهاري</span>';
         localStorage.setItem("darkMode", isDark ? "dark" : "light");
     });
 });
