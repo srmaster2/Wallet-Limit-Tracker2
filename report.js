@@ -10,11 +10,59 @@ function loadWalletData() {
     const saved = localStorage.getItem("wallets");
     if (saved) {
         wallets = JSON.parse(saved);
-        // التأكد من سلامة البيانات
         for (const phone in wallets) {
             if (!wallets[phone].transactions) wallets[phone].transactions = [];
             if (typeof wallets[phone].balance !== "number") wallets[phone].balance = 0;
+            if (!wallets[phone].lastDailyReset) wallets[phone].lastDailyReset = null;
+            if (!wallets[phone].statusOverride) wallets[phone].statusOverride = null;
         }
+    }
+}
+
+// دالة الريست اليومي للحد اليومي مع إعادة تنشيط المحفظة الموقوفة إذا عاد الليمت الشهري متاح
+function dailyLimitResetIfNeeded() {
+    const now = new Date();
+    const todayStr = now.toISOString().slice(0, 10);
+    const currentMonth = todayStr.slice(0, 7);
+
+    let changed = false;
+
+    for (const phone in wallets) {
+        const wallet = wallets[phone];
+
+        // إذا لم يتم الريست اليوم
+        if (wallet.lastDailyReset !== todayStr) {
+            // حساب مجموع الإيداعات الشهرية حتى الآن
+            const monthlyDeposits = wallet.transactions
+                .filter(t => t.type === "deposit" && t.date.slice(0, 7) === currentMonth)
+                .reduce((sum, t) => sum + t.amount, 0);
+
+            // إذا لم يتخطى الليمت الشهري، اعمل ريست
+            if (monthlyDeposits < MONTHLY_LIMIT) {
+                wallet.lastDailyReset = todayStr;
+                changed = true;
+            }
+        }
+
+        // إعادة تنشيط المحفظة الموقوفة إذا أصبح الليمت الشهري متاح
+        const todayDeposits = wallet.transactions
+            .filter(t => t.type === "deposit" && t.date.slice(0, 10) === todayStr)
+            .reduce((sum, t) => sum + t.amount, 0);
+        const monthlyDeposits = wallet.transactions
+            .filter(t => t.type === "deposit" && t.date.slice(0, 7) === currentMonth)
+            .reduce((sum, t) => sum + t.amount, 0);
+
+        if (
+            wallet.statusOverride === "stopped" &&
+            todayDeposits < DAILY_LIMIT &&
+            monthlyDeposits < MONTHLY_LIMIT
+        ) {
+            wallet.statusOverride = null;
+            changed = true;
+        }
+    }
+    if (changed) {
+        localStorage.setItem("wallets", JSON.stringify(wallets));
     }
 }
 
@@ -24,17 +72,14 @@ function calculateWalletStats(phone) {
     const today = new Date().toISOString().slice(0, 10);
     const currentMonth = today.slice(0, 7);
 
-    // حساب إجمالي الإيداعات اليومية
     const dailyDeposits = wallet.transactions
         .filter(t => t.type === "deposit" && t.date.slice(0, 10) === today)
         .reduce((sum, t) => sum + t.amount, 0);
 
-    // حساب إجمالي الإيداعات الشهرية
     const monthlyDeposits = wallet.transactions
         .filter(t => t.type === "deposit" && t.date.slice(0, 7) === currentMonth)
         .reduce((sum, t) => sum + t.amount, 0);
 
-    // حساب المتبقي من الحدود
     const dailyRemaining = Math.max(0, DAILY_LIMIT - dailyDeposits);
     const monthlyRemaining = Math.max(0, MONTHLY_LIMIT - monthlyDeposits);
 
@@ -43,7 +88,7 @@ function calculateWalletStats(phone) {
     let statusText = 'نشطة';
     let statusClass = 'active';
 
-    if (dailyRemaining === 0 || monthlyRemaining === 0) {
+    if (wallet.statusOverride === "stopped" || dailyRemaining === 0 || monthlyRemaining === 0) {
         status = 'stopped';
         statusText = 'موقوفة';
         statusClass = 'stopped';
@@ -53,7 +98,6 @@ function calculateWalletStats(phone) {
         statusClass = 'warning';
     }
 
-    // حساب النسب المئوية
     const dailyUsagePercent = ((dailyDeposits / DAILY_LIMIT) * 100).toFixed(1);
     const monthlyUsagePercent = ((monthlyDeposits / MONTHLY_LIMIT) * 100).toFixed(1);
 
@@ -237,10 +281,10 @@ function generateWalletsReport() {
                         }
                     </div>
                     <div class="wallet-actions">
-                        <button onclick="viewWalletDetails('${phone}')" class="btn-action btn-view" title="عرض التفاصيل">
+                        <button onclick="viewWalletDetails('${phone}')" class="btn btn-action btn-view" title="عرض التفاصيل">
                             <i class="fa-solid fa-eye"></i>
                         </button>
-                        <button onclick="exportWalletData('${phone}')" class="btn-action btn-export" title="تصدير البيانات">
+                        <button onclick="exportWalletData('${phone}')" class="btn btn-action btn-export" title="تصدير البيانات">
                             <i class="fa-solid fa-download"></i>
                         </button>
                     </div>
@@ -499,6 +543,7 @@ function getAlertIcon(type) {
 document.addEventListener("DOMContentLoaded", () => {
     // تحميل البيانات وإنشاء التقرير
     loadWalletData();
+    dailyLimitResetIfNeeded();
     generateSummary();
     generateWalletsReport();
     
@@ -525,6 +570,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // تحديث التقرير كل 30 ثانية
     setInterval(() => {
         loadWalletData();
+        dailyLimitResetIfNeeded();
         generateSummary();
         generateWalletsReport();
     }, 30000);
