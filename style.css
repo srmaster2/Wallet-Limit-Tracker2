@@ -1421,4 +1421,25 @@ body.dark .no-transactions {
         flex-direction: column;
     }
 }
-
+.splash-footer-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 32px;
+    gap: 2px;
+}
+.splash-from {
+    color: #bbb;
+    font-size: 1.08rem;
+    margin: 0;
+    letter-spacing: 1px;
+    font-family: 'Cairo', Arial, sans-serif;
+}
+.splash-author {
+    color: #00c3a5;
+    font-size: 1.18rem;
+    font-weight: bold;
+    margin: 0;
+    letter-spacing: 1px;
+    font-family: 'Cairo', Arial, sans-serif;
+}
