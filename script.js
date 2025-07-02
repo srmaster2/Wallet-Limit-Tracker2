@@ -72,10 +72,10 @@ function addTransaction() {
     const now = new Date();
     const date = formatLocalDateTime(now);
 
-    // Calculate current daily and monthly deposits for the selected wallet
     const today = date.slice(0, 10);
     const currentMonth = date.slice(0, 7);
 
+    // حساب حدود الإيداع
     const dailyDeposits = wallets[phone].transactions
         .filter(t => t.type === "deposit" && t.date.slice(0, 10) === today)
         .reduce((sum, t) => sum + t.amount, 0);
@@ -83,6 +83,15 @@ function addTransaction() {
     const monthlyDeposits = wallets[phone].transactions
         .filter(t => t.type === "deposit" && t.date.slice(0, 7) === currentMonth)
         .reduce((sum, t) => sum + t.amount, 0);
+
+    // حساب حدود السحب
+    const dailyWithdrawals = wallets[phone].transactions
+        .filter(t => t.type === "withdraw" && t.date.slice(0, 10) === today)
+        .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+
+    const monthlyWithdrawals = wallets[phone].transactions
+        .filter(t => t.type === "withdraw" && t.date.slice(0, 7) === currentMonth)
+        .reduce((sum, t) => sum + Math.abs(t.amount), 0);
 
     if (type === "deposit") {
         // Check daily limit
@@ -100,6 +109,16 @@ function addTransaction() {
     } else if (type === "withdraw") {
         const total = amount + 1;
         if (wallets[phone].balance < total) return showAlert("لا يوجد رصيد كافٍ", "error");
+
+        // تحقق من حد السحب اليومي
+        if (dailyWithdrawals + amount > DAILY_LIMIT) {
+            return showAlert(`تجاوز الحد اليومي للسحب. الحد المتبقي هو ${Math.max(0, DAILY_LIMIT - dailyWithdrawals).toFixed(2)} جنيه.`, "error");
+        }
+        // تحقق من حد السحب الشهري
+        if (monthlyWithdrawals + amount > MONTHLY_LIMIT) {
+            return showAlert(`تجاوز الحد الشهري للسحب. الحد المتبقي هو ${Math.max(0, MONTHLY_LIMIT - monthlyWithdrawals).toFixed(2)} جنيه.`, "error");
+        }
+
         wallets[phone].balance -= total;
         wallets[phone].transactions.push({ amount: -total, date, type, note });
         showAlert("تم إضافة عملية السحب بنجاح", "success");
@@ -499,6 +518,7 @@ document.addEventListener("DOMContentLoaded", () => {
     loadWalletData();
     populateWalletList();
     addDynamicStyles();
+    dailyLimitResetIfNeeded();
 
     // Dark mode toggle
     const darkToggle = document.getElementById("darkModeToggle");
@@ -532,4 +552,50 @@ function loadWalletData() {
         }
     }
 }
+
+// إضافة ريسيت يومي تلقائي للحد اليومي (دخول/خروج) الساعة 12 AM بشرط عدم تجاوز الليمت الشهري
+function dailyLimitResetIfNeeded() {
+    const now = new Date();
+    const todayStr = now.toISOString().slice(0, 10);
+    const currentMonth = todayStr.slice(0, 7);
+
+    let changed = false;
+
+    for (const phone in wallets) {
+        const wallet = wallets[phone];
+        if (!wallet.lastDailyReset) wallet.lastDailyReset = null;
+
+        // إذا لم يتم الريست اليوم
+        if (wallet.lastDailyReset !== todayStr) {
+            // حساب مجموع الإيداعات الشهرية
+            const monthlyDeposits = wallet.transactions
+                .filter(t => t.type === "deposit" && t.date.slice(0, 7) === currentMonth)
+                .reduce((sum, t) => sum + t.amount, 0);
+            // حساب مجموع السحوبات الشهرية (قيم موجبة)
+            const monthlyWithdrawals = wallet.transactions
+                .filter(t => t.type === "withdraw" && t.date.slice(0, 7) === currentMonth)
+                .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+
+            // إذا لم يتجاوز أي منهما الليمت الشهري، يتم الريست
+            if (monthlyDeposits < MONTHLY_LIMIT && monthlyWithdrawals < MONTHLY_LIMIT) {
+                wallet.lastDailyReset = todayStr;
+                changed = true;
+            }
+        }
+    }
+    if (changed) {
+        localStorage.setItem("wallets", JSON.stringify(wallets));
+    }
+}
+
+// استدعاء الريست اليومي عند تحميل الصفحة وكل 30 ثانية
+document.addEventListener("DOMContentLoaded", () => {
+    loadWalletData();
+    populateWalletList();
+    addDynamicStyles();
+    dailyLimitResetIfNeeded();
+    setInterval(() => {
+        dailyLimitResetIfNeeded();
+    }, 30000);
+});
 
